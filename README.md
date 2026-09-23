@@ -2,13 +2,14 @@
 
 Silent OEM cleanup for new HP Windows 10/11 PCs used by AccentLogic.
 
-**Live page:** once Vercel is linked, use the project URL. Until then:
-
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; irm https://raw.githubusercontent.com/accentdavid/hp-debloat/main/hp-debloat.ps1 | iex
+Set-ExecutionPolicy Bypass -Scope Process -Force
+irm https://raw.githubusercontent.com/accentdavid/hp-debloat/main/hp-debloat.ps1 | iex
 ```
 
 Run **elevated**. The script refuses non-HP hardware unless you pass `-Force`.
+
+The branded landing page ships on a `*.grok.me` host via Grok Build → Publish (same path as Dell Strip and Lenovo ThinkClean). The script source of truth stays on this repo so NinjaOne and `irm | iex` keep a stable URL.
 
 ## What it removes
 
@@ -26,24 +27,33 @@ Run **elevated**. The script refuses non-HP hardware unless you pass `-Force`.
 - Function-key / hotkey UWP services
 - Chipset, GPU, NIC, touchpad, printer drivers
 - HP PC Hardware Diagnostics (useful on warranty tickets)
+- HP Smart when an HP printer is present
 
 ## NinjaOne
 
 Paste `hp-debloat.ps1` into a Windows PowerShell automation script. Run as **SYSTEM**. No GUI prompts. Log:
 
-`C:\ProgramData\AccentLogic\HP-Debloat.log`
+`C:\\ProgramData\\AccentLogic\\HP-Debloat.log`
 
 Detection tag:
 
-`C:\ProgramData\AccentLogic\HP-Debloat.tag`
+`C:\\ProgramData\\AccentLogic\\HP-Debloat.tag`
 
 ## Switches
+
+`irm | iex` cannot pass parameters. Download then run:
+
+```powershell
+irm https://raw.githubusercontent.com/accentdavid/hp-debloat/main/hp-debloat.ps1 -OutFile $env:TEMP\\hp-debloat.ps1
+& $env:TEMP\\hp-debloat.ps1 -WhatIf
+```
 
 | Switch | Meaning |
 | --- | --- |
 | `-WhatIf` | Report only |
 | `-Force` | Skip HP manufacturer check |
 | `-KeepSupportAssistant` | Leave HPSA installed |
+| `-KeepOmen` | Leave Omen Gaming Hub / Command Center |
 | `-RemoveDiagnostics` | Also remove HP PC Hardware Diagnostics |
 
 ## Caveats

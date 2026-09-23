@@ -4,77 +4,228 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AccentLogic · HP Debloat</title>
+<meta name="description" content="One-liner PowerShell to strip HP OEM bloat, Wolf Security, and trial AV from a new HP PC.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@360;480;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@360;480;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#000;--card:#111;--ink:#fff;--muted:#888;--dim:#333;--line:rgba(230,94,0,.22);--gold:#E65E00;--gold2:#FF781A;--link:#0088E6}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#000;color:var(--ink);font-family:Outfit,system-ui,sans-serif}
-header{padding:28px 28px 8px;border-left:4px solid var(--gold)}
-.kicker{letter-spacing:.22em;text-transform:uppercase;font-size:11px;color:var(--gold);font-weight:600}
-h1{font-family:Syne,sans-serif;margin:6px 0 0;font-size:36px;letter-spacing:-.02em}
-h1 em{color:var(--gold2);font-style:normal}
-.sub{color:var(--muted);font-size:14px;margin-top:8px;max-width:640px;line-height:1.45}
-main{padding:20px 28px 64px;max-width:980px}
-.cmd{background:#111;border:1px solid var(--line);border-radius:14px;padding:16px 18px;position:relative;margin:18px 0 28px}
-.cmd label{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
-pre{margin:0;white-space:pre-wrap;word-break:break-all;font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:#f3f3f3}
-button.copy{margin-top:12px;border:1px solid var(--line);background:#1a1a1a;color:#fff;border-radius:10px;padding:8px 12px;font:inherit;cursor:pointer}
-button.copy:hover{border-color:var(--gold2)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
-.card h2{font-family:Syne,sans-serif;font-size:18px;margin:0 0 10px}
-.card ul{margin:0;padding-left:18px;color:#ddd;font-size:14px;line-height:1.55}
-.note{margin-top:22px;color:var(--muted);font-size:13px;line-height:1.5}
-a{color:var(--link)}
-.site-foot{border-top:1px solid var(--gold);color:#666;letter-spacing:.14em;text-transform:uppercase;font-size:11px;padding:16px 28px 28px}
-@media(max-width:720px){.grid{grid-template-columns:1fr}header,main{padding-left:18px;padding-right:18px}}
+:root {
+  --bg: #000000;
+  --card: #111111;
+  --ink: #FFFFFF;
+  --muted: #666666;
+  --dim: #333333;
+  --line: rgba(230,94,0,.22);
+  --orange: #E65E00;
+  --ember: #FF781A;
+  --link: #0088E6;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #000;
+  color: var(--ink);
+  font-family: Outfit, system-ui, sans-serif;
+}
+body {
+  background:
+    radial-gradient(900px 480px at -10% -20%, rgba(230,94,0,.14), transparent 55%),
+    #000;
+}
+header {
+  padding: 28px 28px 8px;
+  border-left: 4px solid var(--orange);
+  margin: 12px 16px 0;
+}
+.kicker {
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--orange);
+  font-weight: 600;
+}
+h1 {
+  font-family: Syne, sans-serif;
+  margin: 6px 0 4px;
+  font-size: 36px;
+  letter-spacing: -.02em;
+}
+h1 em { color: var(--orange); font-style: normal; }
+.sub { color: var(--muted); font-size: 14px; max-width: 640px; line-height: 1.5; }
+main { padding: 20px 32px 64px; max-width: 980px; }
+.cmd {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 10px 10px 16px;
+  margin: 22px 0 10px;
+}
+.cmd code {
+  flex: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  color: #fff;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 10px 0;
+}
+button.copy {
+  border: 0;
+  background: var(--orange);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  padding: 0 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 88px;
+}
+button.copy:hover { background: var(--ember); }
+.hint { color: var(--muted); font-size: 13px; margin: 0 0 28px; }
+.hint strong { color: #ccc; font-weight: 600; }
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 18px 14px;
+}
+.card h2 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+.card ul { margin: 0; padding: 0 0 0 18px; color: #ddd; font-size: 14px; line-height: 1.55; }
+.card.keep h2 { color: #ccc; }
+.flags {
+  margin-top: 22px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+}
+.flags h2 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+.flags pre {
+  margin: 0;
+  overflow-x: auto;
+  background: #0a0a0a;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #eee;
+}
+.flags p { color: var(--muted); font-size: 13px; margin: 10px 0 0; }
+a { color: var(--link); }
+.site-foot {
+  border-top: 1px solid var(--orange);
+  color: var(--muted);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 16px 32px 28px;
+}
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--orange);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: none;
+}
+@media (max-width: 720px) {
+  h1 { font-size: 28px; }
+  .grid { grid-template-columns: 1fr; }
+  .cmd { flex-direction: column; }
+  button.copy { padding: 12px; }
+}
 </style>
 </head>
 <body>
 <header>
-  <div class="kicker">AccentLogic</div>
+  <div class="kicker">AccentLogic · Intelligent Technology</div>
   <h1>HP <em>Debloat</em></h1>
-  <p class="sub">One elevated command strips consumer HP junk, trial AV, and the Wolf / Sure* stack from a new HP PC. Audio, hotkeys, OneDrive, and hardware diagnostics stay.</p>
+  <p class="sub">Strip the OEM stack off a new HP PC. Wolf Security, Sure Click, Support Assistant, Insights, JumpStart, and the McAfee trial — gone. Drivers, audio, hotkeys, and OneDrive stay.</p>
 </header>
 <main>
   <div class="cmd">
-    <label>PowerShell · Run as administrator</label>
-    <pre id="cmd">Set-ExecutionPolicy Bypass -Scope Process -Force; irm https://raw.githubusercontent.com/accentdavid/hp-debloat/main/hp-debloat.ps1 | iex</pre>
-    <button class="copy" type="button" onclick="navigator.clipboard.writeText(document.getElementById('cmd').textContent);this.textContent='Copied'">Copy command</button>
+    <code id="oneLiner">irm https://raw.githubusercontent.com/accentdavid/hp-debloat/main/hp-debloat.ps1 | iex</code>
+    <button class="copy" type="button" id="copyBtn">Copy</button>
   </div>
+  <p class="hint">Run in an <strong>elevated</strong> PowerShell or Windows Terminal. NinjaOne can run the same script as SYSTEM with no prompts. Log lands in <strong>C:\\ProgramData\\AccentLogic\\HP-Debloat.log</strong>.</p>
+
   <div class="grid">
     <section class="card">
-      <h2>Removes</h2>
+      <h2>Removed</h2>
       <ul>
-        <li>myHP, JumpStarts, QuickDrop, WorkWell, EasyClean, Welcome</li>
-        <li>HP Support Assistant, Notifications, Documentation</li>
-        <li>Wolf Security + Sure Click / Sense / Run / Recover</li>
-        <li>Connection Optimizer, Insights, Touchpoint, Poly Lens</li>
-        <li>McAfee LiveSafe, WebAdvisor, Security Scan Plus</li>
+        <li>HP Wolf Security + Sure Click / Run / Sense / Recover (correct order)</li>
+        <li>HP Support Assistant, myHP, JumpStart, Documentation</li>
+        <li>Connection Optimizer, Notifications, Insights / Touchpoint</li>
+        <li>Omen Gaming Hub / Command Center (consumer images)</li>
+        <li>McAfee LiveSafe, WebAdvisor, Norton trial, ExpressVPN stub</li>
+        <li>Orphan HP scheduled tasks and Insights services</li>
       </ul>
     </section>
-    <section class="card">
-      <h2>Keeps</h2>
+    <section class="card keep">
+      <h2>Kept</h2>
       <ul>
         <li>OneDrive</li>
-        <li>HP Audio Control / Realtek</li>
-        <li>Fn-key / hotkey UWP services</li>
-        <li>Chipset, GPU, NIC, touchpad drivers</li>
-        <li>HP PC Hardware Diagnostics</li>
+        <li>HP / Realtek audio control</li>
+        <li>Hotkey / Fn-key services</li>
+        <li>Chipset, GPU, touchpad drivers</li>
+        <li>HP Smart — only if an HP printer is present</li>
+        <li>Anything not on the explicit remove list</li>
       </ul>
     </section>
   </div>
-  <p class="note">
-    Refuses non-HP hardware unless you add <code>-Force</code>.
-    Use <code>-WhatIf</code> for a dry run.
-    Log: <code>C:\ProgramData\AccentLogic\HP-Debloat.log</code>.
-    If Wolf comes back after reboot, disable HP Sure Run in BIOS and re-run.
-    Microsoft Store junk is a separate pass — Ninja script <strong>Remove Microsoft Bloatware</strong> (id 88).
-    Source: <a href="https://github.com/accentdavid/hp-debloat">github.com/accentdavid/hp-debloat</a>
-  </p>
+
+  <section class="flags">
+    <h2>Optional switches</h2>
+    <pre>irm https://raw.githubusercontent.com/accentdavid/hp-debloat/main/hp-debloat.ps1 -OutFile $env:TEMP\\hp-debloat.ps1
+&amp; $env:TEMP\\hp-debloat.ps1 -KeepSupportAssistant
+&amp; $env:TEMP\\hp-debloat.ps1 -KeepOmen
+&amp; $env:TEMP\\hp-debloat.ps1 -Force          # non-HP hardware
+&amp; $env:TEMP\\hp-debloat.ps1 -WhatIf         # log only</pre>
+    <p>Refuses non-HP machines unless you pass <code>-Force</code>. Detection tag: <code>C:\\ProgramData\\AccentLogic\\HP-Debloat.tag</code>.</p>
+    <p>Source: <a href="https://github.com/accentdavid/hp-debloat">github.com/accentdavid/hp-debloat</a> · Script: <a href="https://raw.githubusercontent.com/accentdavid/hp-debloat/main/hp-debloat.ps1">hp-debloat.ps1</a></p>
+  </section>
 </main>
-<footer class="site-foot">AccentLogic · Internal tech tool · 23 Sep 2026</footer>
+<footer class="site-foot">AccentLogic · HP Debloat v1.0 · 23 Sep 2026</footer>
+<div class="toast" id="toast">Copied</div>
+<script>
+const line = document.getElementById('oneLiner').textContent.trim();
+const btn  = document.getElementById('copyBtn');
+const toast = document.getElementById('toast');
+btn.addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(line); }
+  catch {
+    const t = document.createElement('textarea');
+    t.value = line; document.body.appendChild(t); t.select();
+    document.execCommand('copy'); t.remove();
+  }
+  toast.style.display = 'block';
+  btn.textContent = 'Copied';
+  setTimeout(() => { toast.style.display = 'none'; btn.textContent = 'Copy'; }, 1400);
+});
+</script>
 </body>
 </html>
