@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AccentLogic · HP Debloat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@360;480;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--card:#111;--ink:#fff;--muted:#888;--dim:#333;--line:rgba(230,94,0,.22);--gold:#E65E00;--gold2:#FF781A;--link:#0088E6}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#000;color:var(--ink);font-family:Outfit,system-ui,sans-serif}
+header{padding:28px 28px 8px;border-left:4px solid var(--gold)}
+.kicker{letter-spacing:.22em;text-transform:uppercase;font-size:11px;color:var(--gold);font-weight:600}
+h1{font-family:Syne,sans-serif;margin:6px 0 0;font-size:36px;letter-spacing:-.02em}
+h1 em{color:var(--gold2);font-style:normal}
+.sub{color:var(--muted);font-size:14px;margin-top:8px;max-width:640px;line-height:1.45}
+main{padding:20px 28px 64px;max-width:980px}
+.cmd{background:#111;border:1px solid var(--line);border-radius:14px;padding:16px 18px;position:relative;margin:18px 0 28px}
+.cmd label{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+pre{margin:0;white-space:pre-wrap;word-break:break-all;font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:#f3f3f3}
+button.copy{margin-top:12px;border:1px solid var(--line);background:#1a1a1a;color:#fff;border-radius:10px;padding:8px 12px;font:inherit;cursor:pointer}
+button.copy:hover{border-color:var(--gold2)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.card h2{font-family:Syne,sans-serif;font-size:18px;margin:0 0 10px}
+.card ul{margin:0;padding-left:18px;color:#ddd;font-size:14px;line-height:1.55}
+.note{margin-top:22px;color:var(--muted);font-size:13px;line-height:1.5}
+a{color:var(--link)}
+.site-foot{border-top:1px solid var(--gold);color:#666;letter-spacing:.14em;text-transform:uppercase;font-size:11px;padding:16px 28px 28px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}header,main{padding-left:18px;padding-right:18px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">AccentLogic</div>
+  <h1>HP <em>Debloat</em></h1>
+  <p class="sub">One elevated command strips consumer HP junk, trial AV, and the Wolf / Sure* stack from a new HP PC. Audio, hotkeys, OneDrive, and hardware diagnostics stay.</p>
+</header>
+<main>
+  <div class="cmd">
+    <label>PowerShell · Run as administrator</label>
+    <pre id="cmd">Set-ExecutionPolicy Bypass -Scope Process -Force; irm https://raw.githubusercontent.com/accentdavid/hp-debloat/main/hp-debloat.ps1 | iex</pre>
+    <button class="copy" type="button" onclick="navigator.clipboard.writeText(document.getElementById('cmd').textContent);this.textContent='Copied'">Copy command</button>
+  </div>
+  <div class="grid">
+    <section class="card">
+      <h2>Removes</h2>
+      <ul>
+        <li>myHP, JumpStarts, QuickDrop, WorkWell, EasyClean, Welcome</li>
+        <li>HP Support Assistant, Notifications, Documentation</li>
+        <li>Wolf Security + Sure Click / Sense / Run / Recover</li>
+        <li>Connection Optimizer, Insights, Touchpoint, Poly Lens</li>
+        <li>McAfee LiveSafe, WebAdvisor, Security Scan Plus</li>
+      </ul>
+    </section>
+    <section class="card">
+      <h2>Keeps</h2>
+      <ul>
+        <li>OneDrive</li>
+        <li>HP Audio Control / Realtek</li>
+        <li>Fn-key / hotkey UWP services</li>
+        <li>Chipset, GPU, NIC, touchpad drivers</li>
+        <li>HP PC Hardware Diagnostics</li>
+      </ul>
+    </section>
+  </div>
+  <p class="note">
+    Refuses non-HP hardware unless you add <code>-Force</code>.
+    Use <code>-WhatIf</code> for a dry run.
+    Log: <code>C:\ProgramData\AccentLogic\HP-Debloat.log</code>.
+    If Wolf comes back after reboot, disable HP Sure Run in BIOS and re-run.
+    Microsoft Store junk is a separate pass — Ninja script <strong>Remove Microsoft Bloatware</strong> (id 88).
+    Source: <a href="https://github.com/accentdavid/hp-debloat">github.com/accentdavid/hp-debloat</a>
+  </p>
+</main>
+<footer class="site-foot">AccentLogic · Internal tech tool · 23 Sep 2026</footer>
+</body>
+</html>
